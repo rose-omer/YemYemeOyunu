@@ -21,7 +21,11 @@ Bu Python script'i, pygame kütüphanesi kullanılarak geliştirilmiş basit bir
 ## Geliştirici Bilgisi
 Bu oyun, pygame kütüphanesi kullanılarak geliştirilmiş ve Python programlama diliyle yazılmıştır.
 
-### Geliştirici
+### Ekran Görüntüsü
+  ![1](https://github.com/rose-omer/YemYemeOyunu/assets/117285777/ee6c668e-3282-466e-95aa-f5e8669c9eb7)
+  ![2](https://github.com/rose-omer/YemYemeOyunu/assets/117285777/0dcfcb0f-2a16-4804-92a2-eee7729406f4)
+
+#### Geliştirici
 - Geliştirici: [Kullanıcı adınız veya adınız]((https://www.instagram.com/bennomerrr/))
 - GitHub: [GitHub hesabınız](https://github.com/rose-omer/)
 
