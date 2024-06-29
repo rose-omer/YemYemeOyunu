@@ -22,6 +22,6 @@ Bu Python script'i, pygame kütüphanesi kullanılarak geliştirilmiş basit bir
 Bu oyun, pygame kütüphanesi kullanılarak geliştirilmiş ve Python programlama diliyle yazılmıştır.
 
 ### Geliştirici
-- Geliştirici: [Kullanıcı adınız veya adınız]([https://github.com/rose-omer](https://www.instagram.com/bennomerrr/))
+- Geliştirici: [Kullanıcı adınız veya adınız]((https://www.instagram.com/bennomerrr/))
 - GitHub: [GitHub hesabınız](https://github.com/rose-omer/)
 
