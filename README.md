@@ -27,5 +27,5 @@ Bu oyun, pygame kütüphanesi kullanılarak geliştirilmiş ve Python programlam
 
 #### Geliştirici
 - Geliştirici: [ömer](https://www.instagram.com/bennomerrr/)
-- GitHub: [GitHub hesabınız](https://github.com/rose-omer/)
+- GitHub: (https://github.com/rose-omer/)
 
