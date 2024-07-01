@@ -26,6 +26,6 @@ Bu oyun, pygame kütüphanesi kullanılarak geliştirilmiş ve Python programlam
   ![2](https://github.com/rose-omer/YemYemeOyunu/assets/117285777/0dcfcb0f-2a16-4804-92a2-eee7729406f4)
 
 #### Geliştirici
-- Geliştirici: [ömer](https://www.instagram.com/bennomerrr/))
+- Geliştirici: [ömer](https://www.instagram.com/bennomerrr/)
 - GitHub: [GitHub hesabınız](https://github.com/rose-omer/)
 
