@@ -1,13 +1,9 @@
-"""Yem Canavarı: süre bitmeden mamaları topla, kirpilerden ve arılardan kaç."""
-from __future__ import annotations
-
 import json
 import math
 import random
 from array import array
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Optional
 
 import pygame
 
@@ -17,7 +13,7 @@ REKOR_DOSYASI = KLASOR / "rekor.json"
 
 GENISLIK, YUKSEKLIK = 800, 600
 FPS = 60
-UST_BANT = 70  # üst bilgi şeridi; oyun alanı bunun altında
+UST_BANT = 70
 OYUN_ALANI = pygame.Rect(0, UST_BANT, GENISLIK, YUKSEKLIK - UST_BANT)
 
 BASLANGIC_SURESI = 30.0
@@ -37,14 +33,12 @@ MAVI = (140, 200, 255)
 PANEL = (12, 14, 28)
 
 
-# --------------------------------------------------------------------------- kurallar
-
-@dataclass(frozen=True)
+@dataclass
 class EsyaTuru:
     ad: str
     puan: int
     sure: float
-    omur: Optional[float]  # None: kaybolmaz
+    omur: float
     agirlik: int
     aciklama: str
     renk: tuple
@@ -59,14 +53,14 @@ TURLER = {
 }
 
 
-@dataclass(frozen=True)
+@dataclass
 class Tema:
     ad: str
-    ust: tuple  # zemin renk geçişi (üst)
-    alt: tuple  # zemin renk geçişi (alt)
-    sus: tuple  # zemindeki süslerin rengi (ot, taş, su birikintisi)
+    ust: tuple
+    alt: tuple
+    sus: tuple
     vurgu: tuple
-    zerre: str  # havadaki süs: polen, yaprak, toz, ates_bocegi, yagmur
+    zerre: str
     zerre_rengi: tuple
     zerre_sayisi: int
 
@@ -93,20 +87,19 @@ YENILIKLER = {
 }
 
 
-@dataclass(frozen=True)
+@dataclass
 class SeviyeAyari:
     esya_sayisi: int
     kirpi: int
     ari: int
     dusman_hizi: float
     oyuncu_hizi: float
-    sure_hizi: float  # süre bu kat hızlı akar
+    sure_hizi: float
     turler: tuple
     yenilik: str
 
 
 def seviye_esigi(seviye):
-    """Bu seviyeye ulaşmak için yenmesi gereken yem sayısı: 0, 8, 18, 30, 44, 60, ..."""
     n = seviye - 1
     return 8 * n + n * (n - 1)
 
@@ -163,13 +156,10 @@ def rekor_yaz(rekor):
     try:
         REKOR_DOSYASI.write_text(json.dumps({"rekor": rekor}))
     except OSError:
-        pass  # rekor kaydedilemese de oyun sürer
+        pass
 
-
-# --------------------------------------------------------------------------- sesler
 
 def ton_uret(f0, f1, sure, ses=0.35, dalga="sinus"):
-    """f0'dan f1'e kayan kısa bir ses efekti üretir."""
     ayar = pygame.mixer.get_init()
     if ayar is None or ayar[1] != -16:
         return None
@@ -189,7 +179,6 @@ def ton_uret(f0, f1, sure, ses=0.35, dalga="sinus"):
 
 
 class Sesler:
-    """Ses aygıtı yoksa oyun sessiz çalışır."""
 
     def __init__(self):
         self.sessiz = False
@@ -221,10 +210,7 @@ class Sesler:
             pygame.mixer.music.set_volume(0 if self.sessiz else 0.45)
 
 
-# --------------------------------------------------------------------------- çizimler
-
 def daire_resim(resim, boyut, zemin):
-    """Resmi beyaz kenarlı yuvarlak bir rozete oturtur."""
     yuzey = pygame.Surface((boyut, boyut), pygame.SRCALPHA)
     merkez = boyut // 2
     pygame.draw.circle(yuzey, zemin, (merkez, merkez), merkez)
@@ -318,8 +304,7 @@ def parilti_ciz(renk, yaricap):
 
 
 def zemin_ciz(tema, tohum):
-    """Temaya göre üstten görünen bir zemin çizer: ot, çiçek, ağaç, taş, su birikintisi."""
-    rnd = random.Random(tohum)  # her açılışta aynı zemin
+    rnd = random.Random(tohum)
     s = pygame.Surface((GENISLIK, YUKSEKLIK))
     for y in range(YUKSEKLIK):
         oran = y / YUKSEKLIK
@@ -327,14 +312,14 @@ def zemin_ciz(tema, tohum):
         pygame.draw.line(s, renk, (0, y), (GENISLIK, y))
 
     doku = pygame.Surface((GENISLIK, YUKSEKLIK), pygame.SRCALPHA)
-    for _ in range(2500):  # hafif doku
+    for _ in range(2500):
         ton = rnd.choice(((0, 0, 0, 22), (255, 255, 255, 14)))
         doku.fill(ton, (rnd.randrange(GENISLIK), rnd.randrange(YUKSEKLIK), 2, 2))
 
-    if tema.zerre == "ates_bocegi":  # gece: ortada ay ışığı
+    if tema.zerre == "ates_bocegi":  # ay ışığı
         for r in range(260, 0, -8):
             pygame.draw.ellipse(doku, (180, 210, 255, 4), (400 - r * 1.4, 330 - r, r * 2.8, r * 2))
-    if tema.zerre == "yaprak":  # park: kenarlarda ağaç tepeleri
+    if tema.zerre == "yaprak":  # ağaçlar
         for _ in range(9):
             x = rnd.choice((rnd.randint(-60, 70), rnd.randint(730, 860)))
             y = rnd.randint(40, 640)
@@ -342,24 +327,24 @@ def zemin_ciz(tema, tohum):
             pygame.draw.circle(doku, (20, 50, 25, 90), (x + 12, y + 14), r)
             pygame.draw.circle(doku, (34, 92, 42, 255), (x, y), r)
             pygame.draw.circle(doku, (52, 124, 56, 255), (x - r // 4, y - r // 4), r // 2)
-    if tema.zerre == "yagmur":  # fırtına: su birikintileri
+    if tema.zerre == "yagmur":  # su birikintileri
         for _ in range(8):
             w, h = rnd.randint(60, 140), rnd.randint(22, 46)
             x, y = rnd.randint(0, GENISLIK - w), rnd.randint(UST_BANT, YUKSEKLIK - h)
             pygame.draw.ellipse(doku, (*tema.sus, 200), (x, y, w, h))
             pygame.draw.ellipse(doku, (190, 210, 230, 90), (x + w // 5, y + h // 5, w // 3, h // 4))
-    if tema.zerre == "toz":  # gün batımı: taşlar
+    if tema.zerre == "toz":  # taşlar
         for _ in range(26):
             w = rnd.randint(8, 22)
             x, y = rnd.randrange(GENISLIK), rnd.randrange(UST_BANT, YUKSEKLIK)
             pygame.draw.ellipse(doku, (0, 0, 0, 40), (x + 2, y + 3, w, w * 2 // 3))
             pygame.draw.ellipse(doku, (*tema.sus, 255), (x, y, w, w * 2 // 3))
 
-    for _ in range(170):  # ot öbekleri
+    for _ in range(170):  # otlar
         x, y = rnd.randrange(GENISLIK), rnd.randrange(UST_BANT, YUKSEKLIK)
         for dx, uzun in ((-4, 7), (0, 10), (4, 7)):
             pygame.draw.line(doku, (*tema.sus, 220), (x, y), (x + dx, y - uzun), 2)
-    if tema.zerre == "polen":  # bahçe: çiçekler
+    if tema.zerre == "polen":  # çiçekler
         for _ in range(45):
             x, y = rnd.randrange(GENISLIK), rnd.randrange(UST_BANT, YUKSEKLIK)
             yaprak = rnd.choice(((255, 255, 255), (255, 190, 215), (255, 230, 100), (190, 170, 255)))
@@ -379,7 +364,6 @@ def vinyet_ciz():
 
 
 def yaz(hedef, font, metin, renk, golge=True, **konum):
-    """Metni gölgeli çizer; konum: center=, topleft=, midtop=, topright=..."""
     yuzey = font.render(metin, True, renk)
     alan = yuzey.get_rect(**konum)
     if golge:
@@ -463,8 +447,6 @@ class Gorseller:
         return self._golge_onbellek[genislik]
 
 
-# --------------------------------------------------------------------------- nesneler
-
 @dataclass
 class Esya:
     tur: str
@@ -537,18 +519,14 @@ def zerre_uret(tip, ilk=True):
     return Zerre(tip, x, y, vx, vy, b, random.uniform(0, math.tau))
 
 
-# --------------------------------------------------------------------------- oyun
-
 class Oyun:
     def __init__(self, gorseller, sesler):
         self.g = gorseller
         self.ses = sesler
         self.rekor = rekor_oku()
-        self.zaman = 0.0  # animasyon saati
+        self.zaman = 0.0
         self.yeni_oyun()
-        self.durum = "menu"  # menu | oyun | durdu | bitti
-
-    # ---- durum
+        self.durum = "menu"  # menu, oyun, durdu, bitti
 
     def yeni_oyun(self):
         self.skor = 0
@@ -594,7 +572,7 @@ class Oyun:
             kirpiler.append(self._dusman_uret(ari=False))
         while len(arilar) < ayar.ari:
             arilar.append(self._dusman_uret(ari=True))
-        for d in kirpiler:  # kirpiler yeni seviyenin hızına geçer
+        for d in kirpiler:
             hiz = math.hypot(d.vx, d.vy) or 1.0
             d.vx, d.vy = d.vx / hiz * ayar.dusman_hizi, d.vy / hiz * ayar.dusman_hizi
         self.dusmanlar = kirpiler + arilar
@@ -625,10 +603,7 @@ class Oyun:
         x, y = self._bos_konum(90)
         return Esya(tur, x, y)
 
-    # ---- girdi
-
     def tus(self, tus):
-        """Tuşu işler; oyundan çıkılacaksa False döner."""
         baslat = tus in (pygame.K_RETURN, pygame.K_SPACE)
         if tus == pygame.K_m:
             self.ses.sessiz_degistir()
@@ -655,8 +630,6 @@ class Oyun:
     def odak_kayboldu(self):
         if self.durum == "oyun":
             self.durum = "durdu"
-
-    # ---- güncelleme
 
     def guncelle(self, dt, tuslar):
         if self.durum == "durdu":
@@ -698,7 +671,7 @@ class Oyun:
         dy = int(tuslar[pygame.K_DOWN] or tuslar[pygame.K_s]) - int(tuslar[pygame.K_UP] or tuslar[pygame.K_w])
         uzunluk = math.hypot(dx, dy) or 1.0
         hedef_vx, hedef_vy = dx / uzunluk * hiz, dy / uzunluk * hiz
-        yumusak = min(1.0, dt * 12)  # hızlanma ve yavaşlama yumuşak olsun
+        yumusak = min(1.0, dt * 12)
         self.vx += (hedef_vx - self.vx) * yumusak
         self.vy += (hedef_vy - self.vy) * yumusak
         if dx:
@@ -710,7 +683,7 @@ class Oyun:
     def _dusmanlari_guncelle(self, dt, oyuncu_r):
         hiz = self.ayar.dusman_hizi
         for d in self.dusmanlar:
-            if d.ari:  # arı oyuncuyu yavaşça kovalar
+            if d.ari:
                 aci = math.atan2(self.y - d.y, self.x - d.x)
                 donus = min(1.0, dt * 2.5)
                 d.vx += (math.cos(aci) * hiz * 0.55 - d.vx) * donus
@@ -780,7 +753,7 @@ class Oyun:
         self._yazi(f"-{CARPMA_CEZASI:.0f} sn", self.x, self.y - 35, KIRMIZI)
         self._patlat(self.x, self.y, (255, 80, 80), 20)
         self.ses.cal("carpma")
-        aci = math.atan2(dusman.y - self.y, dusman.x - self.x)  # düşmanı geri it
+        aci = math.atan2(dusman.y - self.y, dusman.x - self.x)
         hiz = math.hypot(dusman.vx, dusman.vy) or self.ayar.dusman_hizi
         dusman.vx, dusman.vy = math.cos(aci) * hiz, math.sin(aci) * hiz
 
@@ -791,8 +764,6 @@ class Oyun:
             self.rekor = self.skor
             self.yeni_rekor = True
             rekor_yaz(self.rekor)
-
-    # ---- efektler
 
     def _patlat(self, x, y, renk, adet, hiz=170):
         for _ in range(adet):
@@ -809,7 +780,7 @@ class Oyun:
         birlesik = pygame.Surface((yuzey.get_width() + 2, yuzey.get_height() + 2), pygame.SRCALPHA)
         birlesik.blit(golge, (2, 2))
         birlesik.blit(yuzey, (0, 0))
-        self.yazilar.append(UcanYazi(birlesik, x, max(y, UST_BANT + 60)))  # bilgi şeridinin altında kalmasın
+        self.yazilar.append(UcanYazi(birlesik, x, max(y, UST_BANT + 60)))
 
     def _efektleri_guncelle(self, dt):
         for p in self.parcaciklar:
@@ -838,8 +809,6 @@ class Oyun:
                 z.y += math.cos(self.zaman * 1.7 + z.faz) * 25 * dt
             if not (-20 < z.x < GENISLIK + 20 and UST_BANT - 20 < z.y < YUKSEKLIK + 20):
                 self.zerreler[i] = zerre_uret(z.tip, ilk=z.tip == "ates_bocegi")
-
-    # ---- çizim
 
     def ciz(self, ekran):
         g = self.g
@@ -895,7 +864,7 @@ class Oyun:
     def _esya_ciz(self, dunya, e):
         omur = TURLER[e.tur].omur
         if omur is not None and omur - e.yas < 1.5 and int(self.zaman * 10) % 2 == 0:
-            return  # kaybolmak üzere: yanıp söner
+            return
         ikon = self.g.ikonlar[e.tur]
         olcek = min(1.0, e.yas / 0.25)
         if olcek < 1.0:
@@ -926,7 +895,7 @@ class Oyun:
         golge = self.g.golge(boyut)
         dunya.blit(golge, golge.get_rect(center=(self.x, self.y + boyut / 2)))
         if self.koruma > 0 and int(self.zaman * 15) % 2 == 0:
-            return  # çarpmadan sonra yanıp söner
+            return
         hareketli = math.hypot(self.vx, self.vy) > 30
         sallanma = math.sin(self.zaman * 14) * 3 if hareketli else math.sin(self.zaman * 3) * 1.5
         resim = self.g.oyuncu(self.seviye, boyut)
@@ -955,7 +924,6 @@ class Oyun:
         ekran.blit(bant, (0, 0))
         pygame.draw.line(ekran, tema.vurgu, (0, UST_BANT - 1), (GENISLIK, UST_BANT - 1), 2)
 
-        # skor ve kombo
         yaz(ekran, g.f_mini, "SKOR", SOLUK, golge=False, topleft=(18, 8))
         yaz(ekran, g.f_buyuk, str(self.skor), BEYAZ, topleft=(16, 22))
         kalan_kombo = KOMBO_PENCERESI - (self.oyun_zamani - self.son_yeme)
@@ -965,7 +933,6 @@ class Oyun:
             ekran.blit(yuzey, yuzey.get_rect(midleft=(120, 30)))
             cubuk_ciz(ekran, pygame.Rect(122, 50, 110, 6), kalan_kombo / KOMBO_PENCERESI, ALTIN)
 
-        # seviye ve ilerleme
         alt, ust = seviye_esigi(self.seviye), seviye_esigi(self.seviye + 1)
         yaz(ekran, g.f_kucuk, f"SEVİYE {self.seviye}  ·  {tema.ad}", tema.vurgu, midtop=(GENISLIK // 2, 6))
         cubuk = pygame.Rect(GENISLIK // 2 - 120, 36, 240, 14)
@@ -973,7 +940,6 @@ class Oyun:
         yaz(ekran, g.f_mini, f"sonraki seviyeye {ust - self.toplanan} yem", BEYAZ,
             center=(cubuk.centerx, cubuk.bottom + 10))
 
-        # süre
         kritik = self.sure < 8
         renk = KIRMIZI if kritik else ((120, 220, 120) if self.sure > 15 else ALTIN)
         if kritik and int(self.zaman * 4) % 2 == 0:
