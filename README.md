@@ -3,20 +3,25 @@
 Bu Python script'i, pygame kütüphanesi kullanılarak geliştirilmiş basit bir yem yeme oyununu temsil eder. Oyun, klavye yön tuşlarını kullanarak bir karakteri kontrol edip ekrandaki yemleri toplama üzerine kuruludur.
 
 ## Oyun Özellikleri
-- Oyun ekranı genişlik: 800, yükseklik: 600 olarak ayarlanmıştır.
-- Karakter ve yem görselleri (`caylak.png` ve `yem.png`) kullanılmıştır.
-- Arka plan görseli (`arkaplan.jpg`) ekranın arkasında sabit olarak görünür.
-- Skor, karakterin yediği yem miktarına göre gösterilir.
-- Oyun ilerledikçe (skor 5'i geçtiğinde), karakterin görüntüsü değişir ve seviye yükselme sesi çalınır.
+- Süre dolmadan yem topla: oyun 20 saniyeyle başlar, her yem 2 saniye ekler (en çok 30 sn).
+- Her 5 yemde seviye atlanır; karakter hızlanır. İlk seviye atlamada karakterin görüntüsü değişir ve seviye yükselme sesi çalar.
+- Süre bitince "Oyun bitti" ekranı çıkar. En yüksek skor (rekor) `rekor.json` dosyasına kaydedilir.
+- Çapraz hareket, duraklatma ve sessiz mod vardır.
+- Ekran 800x600'dür. Oyun hangi klasörden çalıştırılırsa çalıştırılsın dosyalarını bulur.
 
 ## Kurulum
-1. Python ve pygame kütüphanesini yükleyin.
-2. Ses dosyalarını (`ArkaPlan.mp3`, `yeme.mp3`, `LevelUp.mp3`) aynı dizine koyun.
-3. Oyunu çalıştırmak için `python oyun.py` komutunu kullanın.
+1. Python 3.9 veya üstünü kurun.
+2. Bağımlılığı yükleyin: `pip install -r requirements.txt`
+3. Oyunu başlatın: `python Oyun.py`
 
 ## Kontroller
-- Sol, sağ, yukarı ve aşağı yön tuşlarıyla karakteri hareket ettirin.
-- Yemleri toplayarak skorunuzu artırın.
+| Tuş | İşlev |
+|---|---|
+| Yön tuşları veya W A S D | Karakteri hareket ettir |
+| P | Duraklat / devam |
+| M | Sesi aç / kapat |
+| Enter veya Boşluk | Oyun bittiğinde yeniden başlat |
+| Esc | Çık |
 
 ## Geliştirici Bilgisi
 Bu oyun, pygame kütüphanesi kullanılarak geliştirilmiş ve Python programlama diliyle yazılmıştır.
