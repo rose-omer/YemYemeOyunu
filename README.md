@@ -2,11 +2,19 @@
 
 Python ve pygame ile yazılmış bir toplama oyunu. Köpeği yönet; süre bitmeden mamaları ve kemikleri topla, çikolatadan, kirpilerden ve arılardan uzak dur.
 
+## Ekran görüntüleri
+
 ![Menü](ekran/menu.png)
 
 | Gün Batımı | Gece | Fırtına |
 |---|---|---|
 | ![Gün Batımı](ekran/gun-batimi.png) | ![Gece](ekran/gece.png) | ![Fırtına](ekran/firtina.png) |
+
+## Kullanım
+
+![Oynanış: menü, Bahçe ve Park seviyeleri, kombo](ekran/kullanim.gif)
+
+Enter ile başlayın. Yön tuşlarıyla mama ve kemiğe gidin; art arda yiyince kombo büyür. Yeterli yemde seviye ve ortam değişir.
 
 ## Kurulum
 
