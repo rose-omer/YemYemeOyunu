@@ -1,36 +1,73 @@
-# Python İle Oyun: Yem Yeme Oyunu
+# Yem Canavarı
 
-Bu Python script'i, pygame kütüphanesi kullanılarak geliştirilmiş basit bir yem yeme oyununu temsil eder. Oyun, klavye yön tuşlarını kullanarak bir karakteri kontrol edip ekrandaki yemleri toplama üzerine kuruludur.
+Python ve pygame ile yazılmış bir toplama oyunu. Köpeği yönet; süre bitmeden mamaları ve kemikleri topla, çikolatadan, kirpilerden ve arılardan uzak dur.
 
-## Oyun Özellikleri
-- Süre dolmadan yem topla: oyun 20 saniyeyle başlar, her yem 2 saniye ekler (en çok 30 sn).
-- Her 5 yemde seviye atlanır; karakter hızlanır. İlk seviye atlamada karakterin görüntüsü değişir ve seviye yükselme sesi çalar.
-- Süre bitince "Oyun bitti" ekranı çıkar. En yüksek skor (rekor) `rekor.json` dosyasına kaydedilir.
-- Çapraz hareket, duraklatma ve sessiz mod vardır.
-- Ekran 800x600'dür. Oyun hangi klasörden çalıştırılırsa çalıştırılsın dosyalarını bulur.
+![Menü](ekran/menu.png)
+
+| Gün Batımı | Gece | Fırtına |
+|---|---|---|
+| ![Gün Batımı](ekran/gun-batimi.png) | ![Gece](ekran/gece.png) | ![Fırtına](ekran/firtina.png) |
 
 ## Kurulum
+
 1. Python 3.9 veya üstünü kurun.
-2. Bağımlılığı yükleyin: `pip install -r requirements.txt`
-3. Oyunu başlatın: `python Oyun.py`
+2. Bağımlılığı yükleyin:
+   ```bash
+   pip install -r requirements.txt
+   ```
+3. Oyunu başlatın:
+   ```bash
+   python Oyun.py
+   ```
+
+Windows'ta `python` komutu Microsoft Store'u açıyorsa `py` kullanın: `py -m pip install -r requirements.txt` ve `py Oyun.py`.
 
 ## Kontroller
+
 | Tuş | İşlev |
 |---|---|
-| Yön tuşları veya W A S D | Karakteri hareket ettir |
-| P | Duraklat / devam |
+| Yön tuşları veya W A S D | Hareket |
+| Enter veya Boşluk | Başla, devam et, yeniden oyna |
+| P veya Esc | Duraklat |
+| Esc (duraklatınca) | Ana menü |
 | M | Sesi aç / kapat |
-| Enter veya Boşluk | Oyun bittiğinde yeniden başlat |
-| Esc | Çık |
 
-## Geliştirici Bilgisi
-Bu oyun, pygame kütüphanesi kullanılarak geliştirilmiş ve Python programlama diliyle yazılmıştır.
+Pencere odağını kaybedince oyun kendiliğinden duraklar.
 
-### Ekran Görüntüsü
-  ![1](https://github.com/rose-omer/YemYemeOyunu/assets/117285777/ee6c668e-3282-466e-95aa-f5e8669c9eb7)
-  ![2](https://github.com/rose-omer/YemYemeOyunu/assets/117285777/0dcfcb0f-2a16-4804-92a2-eee7729406f4)
+## Kurallar
+
+Oyun 30 saniyeyle başlar. Süre bitince oyun biter.
+
+| Eşya | Etkisi | İlk çıktığı seviye |
+|---|---|---|
+| Mama | +1 puan, +1.2 sn | 1 |
+| Kemik | +2 puan, +0.8 sn; bir süre sonra kaybolur | 1 |
+| Çikolata | -3 sn, komboyu bozar | 2 |
+| Altın kemik | +5 puan, +2 sn; 4.5 sn içinde kaybolur | 3 |
+| Saat | +5 sn | 4 |
+
+- **Kombo:** 1.3 saniye içinde art arda yersen puan x2, x3 ... x5'e kadar katlanır.
+- **Düşmanlar:** Kirpi ekranda seker. Arı seni kovalar. Değersen 4 saniye kaybedersin ve kısa bir süre korunursun.
+- **Rekor:** En yüksek skor `rekor.json` dosyasına kaydedilir.
+
+## Seviyeler
+
+Seviye, yenen yem sayısına göre atlanır (8, 18, 30, 44, 60 ...). Her seviye +5 saniye verir, ama süre biraz daha hızlı akar.
+
+| Seviye | Ortam | Yenilik |
+|---|---|---|
+| 1 | Bahçe | Mama ve kemik |
+| 2 | Park | Çikolata ve ilk kirpi |
+| 3 | Gün Batımı | Altın kemik; köpek büyür ve patron olur |
+| 4 | Gece | Saat; arılar kovalamaya başlar |
+| 5+ | Fırtına | Daha çok düşman, herkes hızlanır |
+
+## Dosyalar
+
+- `Oyun.py`: Oyunun tamamı. Denge ayarları dosyanın başındaki sabitlerde.
+- `YemekCanavarı/`: Köpek ve mama görselleri, müzik ve sesler. Diğer görseller ve ses efektleri kodla üretilir.
+- `ekran/`: README ekran görüntüleri.
 
 #### Geliştirici
 - Geliştirici: [ömer](https://www.instagram.com/bennomerrr/)
 - GitHub: (https://github.com/rose-omer/)
-
